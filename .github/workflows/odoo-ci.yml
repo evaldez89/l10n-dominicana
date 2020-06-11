@@ -48,7 +48,7 @@ jobs:
 
     - name: List of modules to install or test
       run: |
-        curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/${{ github.base_ref }}/resources/getaddons.py -o getaddons.py
+        curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/12.0/resources/getaddons.py -o getaddons.py
         python -c "from getaddons import get_modules; print(','.join(get_modules('./main', depth=3)))" > _MODULES
 
 
@@ -57,7 +57,7 @@ jobs:
     needs: ['dependencies']
     runs-on: ubuntu-latest
     container:
-      image: gcr.io/iterativo/dockerdoo:${{ github.base_ref }}
+      image: gcr.io/iterativo/dockerdoo:12.0
       env:
         RUN_TESTS: '1'
         PIP_AUTO_INSTALL: '1'
