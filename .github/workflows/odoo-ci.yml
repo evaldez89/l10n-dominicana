@@ -62,7 +62,7 @@ jobs:
         RUN_TESTS: '1'
         PIP_AUTO_INSTALL: '1'
       volumes:
-        - ./:/mnt/extra-addons
+        - /github/home:/mnt/extra-addons
     services:
       postgres:
         image: postgres:11
