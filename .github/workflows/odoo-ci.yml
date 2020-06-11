@@ -25,18 +25,21 @@ jobs:
       with:
         repository: itpp-labs/pos-addons
         path: pos-addons
+        ref: ${{ github.base_ref }}
 
     - name: Checkout camptocamp cloud addons
       uses: actions/checkout@v2
       with:
         repository: camptocamp/odoo-cloud-platform
         path: odoo-cloud-platform
+        ref: ${{ github.base_ref }}
 
     - name: Checkout indexa external services
       uses: actions/checkout@v2
       with:
         repository: indexa-git/external_service_addons
         path: external-service-addons
+        ref: ${{ github.base_ref }}
 
     - name: Print variables
       run: |
