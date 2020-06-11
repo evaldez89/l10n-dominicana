@@ -41,7 +41,6 @@ jobs:
     - name: Print variables
       run: |
       echo ls .
-      echo ls ~
 
     - name: List of modules to install or test
       run: |
