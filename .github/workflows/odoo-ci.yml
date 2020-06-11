@@ -78,7 +78,7 @@ jobs:
         uses: docker://gcr.io/iterativo/dockerdoo:12.0
         with:
           args: odoo
-        working-directory: /
+        # working-directory: /
         env:
           RUN_TESTS: '1'
           PIP_AUTO_INSTALL: '1'
