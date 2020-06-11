@@ -2,12 +2,6 @@ name: Main odoo Unit Tests
 
 on: [push, pull_request]
 
-env:
-  _TEST_BRANCH: "12.0"
-  _RUN_TESTS: "0"
-  _LOG_LEVEL: test
-  _WITHOUT_DEMO: "False"
-
 jobs:
   dependencies:
     name: Pull dependencies
@@ -58,6 +52,10 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: gcr.io/iterativo/dockerdoo:12.0
+      env:
+        RUN_TESTS: '1'
+        PIP_AUTO_INSTALL: '1'
+
       volumes:
         - /github/home:/mnt/extra-addons
     services:
