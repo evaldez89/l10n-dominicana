@@ -75,6 +75,7 @@ jobs:
           - 5432:5432
     steps:
       - name: Run odoo
+        uses: docker://gcr.io/iterativo/dockerdoo:12.0
         with:
           args: odoo
         working-directory: /
