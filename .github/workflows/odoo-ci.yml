@@ -75,7 +75,9 @@ jobs:
           - 5432:5432
     steps:
       - name: Run odoo
-        run: odoo
+        with:
+          args: odoo
+        working-directory: /
         env:
           RUN_TESTS: '1'
           PIP_AUTO_INSTALL: '1'
