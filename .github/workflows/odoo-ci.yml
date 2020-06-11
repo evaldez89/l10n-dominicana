@@ -37,8 +37,8 @@ jobs:
 
     - name: Print variables
       run: |
-        echo ls .
-        echo ls ~
+        echo ls /github/home
+        echo ls ${{ github.workspace }}
 
     - name: List of modules to install or test
       run: |
@@ -78,8 +78,11 @@ jobs:
         uses: docker://gcr.io/iterativo/dockerdoo:12.0
         with:
           args: odoo
-        # working-directory: /
         env:
           RUN_TESTS: '1'
           PIP_AUTO_INSTALL: '1'
+          LOG_LEVEL: test
+          WITHOUT_DEMO: 'False'
           HOME: /
+          ADDONS_PATH: ${{ python -c "from getaddons import get_modules; print(','.join(get_modules('./${REPO_NAME}-ci', depth=3)))" }}
+          EXTRA_MODULES: ${{ python getaddons.py  }}
