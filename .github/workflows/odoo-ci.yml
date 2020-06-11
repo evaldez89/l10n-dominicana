@@ -1,0 +1,77 @@
+name: Main odoo Unit Tests
+
+on: [push, pull_request]
+
+env:
+  _TEST_BRANCH: "12.0"
+  _RUN_TESTS: "0"
+  _LOG_LEVEL: test
+  _WITHOUT_DEMO: "False"
+
+jobs:
+  dependencies:
+    name: Pull dependencies
+    runs-on: ubuntu-latest
+    container:
+      image: gcr.io/cloud-builders/git
+    steps:
+    - name: Checkout local
+      uses: actions/checkout@v2
+      with:
+        path: main
+
+    - name: Checkout ITPP-Labs pos addons
+      uses: actions/checkout@v2
+      with:
+        repository: itpp-labs/pos-addons
+        path: pos-addons
+
+    - name: Checkout camptocamp cloud addons
+      uses: actions/checkout@v2
+      with:
+        repository: camptocamp/odoo-cloud-platform
+        path: odoo-cloud-platform
+
+    - name: Checkout indexa external services
+      uses: actions/checkout@v2
+      with:
+        repository: indexa-git/external_service_addons
+        path: external-service-addons
+
+    - name: Print variables
+      run: |
+      echo ls .
+      echo ls ~
+
+    - name: List of modules to install or test
+      run: |
+      curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/${{ github.base_ref }}/resources/getaddons.py -o getaddons.py
+      python -c "from getaddons import get_modules; print(','.join(get_modules('./main', depth=3)))" > _MODULES
+
+
+  build:
+    name: Test
+    needs: ['dependencies']
+    runs-on: ubuntu-latest
+    container:
+      image: gcr.io/iterativo/dockerdoo:${{ github.base_ref }}
+      env:
+        RUN_TESTS: '1'
+        PIP_AUTO_INSTALL: '1'
+      volumes:
+        - ./:/mnt/extra-addons
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+        # needed because the postgres container does not provide a healthcheck
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
