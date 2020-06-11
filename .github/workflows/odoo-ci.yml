@@ -38,10 +38,6 @@ jobs:
         repository: indexa-git/external_service_addons
         path: external-service-addons
 
-    - name: Print variables
-      run: |
-      echo ls .
-
     - name: List of modules to install or test
       run: |
       curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/${{ github.base_ref }}/resources/getaddons.py -o getaddons.py
