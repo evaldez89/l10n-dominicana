@@ -37,8 +37,8 @@ jobs:
 
     - name: Print variables
       run: |
-        echo ls /github/home
-        echo ls ${{ github.workspace }}
+        ls /github/home
+        ls ${{ github.workspace }}
 
     - name: List of modules to install or test
       run: |
