@@ -7,7 +7,7 @@ jobs:
     name: Pull dependencies
     runs-on: ubuntu-latest
     container:
-      image: gcr.io/cloud-builders/git
+      image: gcr.io/iterativo/dockerdoo:12.0
     outputs:
       get_modules: ${{ steps.get_modules.outputs.modules }}
       get_paths: ${{ steps.get_paths.outputs.paths }}
@@ -38,6 +38,17 @@ jobs:
         path: external-service-addons
         ref: '12.0'
 
+    - name: Donwload python addons script
+      run: curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/${_TEST_BRANCH}/resources/getaddons.py -o getaddons.py
+
+    - name: python get_modules
+      id: get_modules
+      run: echo "::set-output name=modules::python -c 'from getaddons import get_modules; print(",".join(get_modules("$GITHUB_WORKSPACE/main", depth=3)))'"
+
+    - name: python get_addons
+      id: get_paths
+      run: echo "::set-output name=paths::python getaddons.py $GITHUB_WORKSPACE/main"
+  
     - name: pwd
       run: |
         pwd
@@ -46,19 +57,11 @@ jobs:
       run: |
         ls $GITHUB_WORKSPACE
 
-    - name: Downlad addons script
-      run: curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/12.0/resources/getaddons.py -o getaddons.py
-      working-directory: /
-
-    - name: python get_modules
-      id: get_modules
-      run: echo "::set-output name=modules::python -c 'from getaddons import get_modules; print(",".join(get_modules("$GITHUB_WORKSPACE/main", depth=3)))'"
-      working-directory: /
-
-    - name: python get_addons
-      id: get_paths
-      run: echo "::set-output name=paths::python getaddons.py $GITHUB_WORKSPACE/main"
-      working-directory: /
+    - name: Upload repository results
+      uses: actions/upload-artifact@v2
+      with:
+        name: repositories
+        path: $GITHUB_WORKSPACE
 
   build:
     name: Test
@@ -85,6 +88,11 @@ jobs:
         ports:
           - 5432:5432
     steps:
+
+    - name: Upload repository results
+      uses: actions/download-artifact@v2
+      with:
+        name: repositories
     - name: show local
       run: ls $GITHUB_WORKSPACE
     - name: Copy folders to odoo
