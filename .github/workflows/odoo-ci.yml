@@ -76,7 +76,7 @@ jobs:
         ls $GITHUB_WORKSPACE
 
     - name: Copy folders to odoo
-      run: sudo cp -r $GITHUB_WORKSPACE /mnt/extra-addons && chown -R 1000:1000 /mnt/extra-addons
+      run: sudo cp -r $GITHUB_WORKSPACE /mnt/extra-addons && sudo chown -R 1000:1000 /mnt/extra-addons
 
     - name: Run odoo
       uses: docker://gcr.io/iterativo/dockerdoo:12.0
