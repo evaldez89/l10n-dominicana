@@ -8,7 +8,12 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: gcr.io/cloud-builders/git
-    steps:
+
+  outputs:
+    get_modules: ${{ steps.get_modules.outputs.modules }}
+    get_paths: ${{ steps.get_paths.outputs.paths }}
+
+   steps:
     - name: Checkout local
       uses: actions/checkout@v2
       with:
@@ -35,23 +40,27 @@ jobs:
         path: external-service-addons
         ref: '12.0'
 
-    - name: ls /github/home
+    - name: pwd
       run: |
-        ls /github/home
-
-    - name: ls .
-      run: |
-        ls .
+        pwd
 
     - name: ls $GITHUB_WORKSPACE
       run: |
         ls $GITHUB_WORKSPACE
 
-    - name: List of modules to install or test
-      run: |
-        curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/12.0/resources/getaddons.py -o getaddons.py
-        python -c "from getaddons import get_modules; print(','.join(get_modules('./main', depth=3)))" > _MODULES
+    - name: Downlad addons script
+      run: curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/12.0/resources/getaddons.py -o getaddons.py
+        working-directory: /
 
+    - name: python get_modules
+      id: get_modules
+      run: echo "::set-output name=modules::"python -c "from getaddons import get_modules; print(','.join(get_modules('$GITHUB_WORKSPACE/main', depth=3)))" > _MODULES"
+        working-directory: /
+
+    - name: python get_addons
+      id: get_paths
+      run: echo "::set-output name=paths::python getaddons.py $GITHUB_WORKSPACE/main"
+        working-directory: /
 
   build:
     name: Test
@@ -64,7 +73,7 @@ jobs:
         PIP_AUTO_INSTALL: '1'
 
       volumes:
-        - /github/home:/mnt/extra-addons
+        - $GITHUB_WORKSPACE:/mnt/extra-addons
     services:
       postgres:
         image: postgres:11
@@ -91,3 +100,5 @@ jobs:
           LOG_LEVEL: test
           WITHOUT_DEMO: 'False'
           HOME: /
+          ADDONS_PATH: ${{needs.dependencies.outputs.get_paths}}
+          EXTRA_MODULES: ${{needs.dependencies.outputs.get_modules}}
