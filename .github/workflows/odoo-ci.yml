@@ -9,9 +9,9 @@ jobs:
     container:
       image: gcr.io/cloud-builders/git
 
-  outputs:
-    get_modules: ${{ steps.get_modules.outputs.modules }}
-    get_paths: ${{ steps.get_paths.outputs.paths }}
+    outputs:
+      get_modules: ${{ steps.get_modules.outputs.modules }}
+      get_paths: ${{ steps.get_paths.outputs.paths }}
 
    steps:
     - name: Checkout local
