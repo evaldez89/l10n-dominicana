@@ -35,12 +35,18 @@ jobs:
         path: external-service-addons
         ref: '12.0'
 
-    - name: Print variables
+    - name: ls /github/home
       run: |
         ls /github/home
+
+    - name: ls .
+      run: |
         ls .
+
+    - name: ls $GITHUB_WORKSPACE
+      run: |
         ls $GITHUB_WORKSPACE
-        echo ls .
+
     - name: List of modules to install or test
       run: |
         curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/12.0/resources/getaddons.py -o getaddons.py
