@@ -69,9 +69,6 @@ jobs:
       env:
         RUN_TESTS: '1'
         PIP_AUTO_INSTALL: '1'
-
-      volumes:
-        - $GITHUB_WORKSPACE:/mnt/extra-addons
     services:
       postgres:
         image: postgres:11
@@ -88,6 +85,10 @@ jobs:
         ports:
           - 5432:5432
     steps:
+    - name: show local
+      run: ls .
+    - name: Copy folders to odoo
+      run: cp -r * /mnt/extra-addons
     - name: Run odoo
       uses: docker://gcr.io/iterativo/dockerdoo:12.0
       with:
