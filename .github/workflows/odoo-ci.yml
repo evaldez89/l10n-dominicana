@@ -65,11 +65,11 @@ jobs:
 
     - name: python get_modules
       id: get_modules
-      run: echo python -c "from getaddons import get_modules; print(','.join(get_modules('./${REPO_NAME}-ci', depth=3)))"
+      run: python -c "from getaddons import get_modules; print(','.join(get_modules('./${REPO_NAME}-ci', depth=3)))"
 
     - name: python get_addons
       id: get_paths
-      run: echo python getaddons.py $GITHUB_WORKSPACE/main
+      run: python getaddons.py $GITHUB_WORKSPACE/main
   
     - name: pwd
       run: |
