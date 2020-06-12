@@ -48,12 +48,12 @@ jobs:
 
     - name: Downlad addons script
       run: curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/12.0/resources/getaddons.py -o getaddons.py
-        working-directory: /
+      working-directory: /
 
     - name: python get_modules
       id: get_modules
       run: echo "::set-output name=modules::python -c 'from getaddons import get_modules; print(",".join(get_modules("$GITHUB_WORKSPACE/main", depth=3)))'"
-        working-directory: /
+      working-directory: /
 
     - name: python get_addons
       id: get_paths
