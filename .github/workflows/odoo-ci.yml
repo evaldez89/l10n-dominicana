@@ -39,7 +39,7 @@ jobs:
       run: |
         ls /github/home
         ls .
-        le $GITHUB_WORKSPACE
+        ls $GITHUB_WORKSPACE
         echo ls .
     - name: List of modules to install or test
       run: |
