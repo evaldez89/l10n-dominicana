@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: gcr.io/cloud-builders/git
-    outputs:
-      get_modules: ${{ steps.get_modules.outputs.modules }}
-      get_paths: ${{ steps.get_paths.outputs.paths }}
+    # outputs:
+    #   get_modules: ${{ steps.get_modules.outputs.modules }}
+    #   get_paths: ${{ steps.get_paths.outputs.paths }}
    steps:
     - name: Checkout local
       uses: actions/checkout@v2
@@ -52,7 +52,7 @@ jobs:
 
     - name: python get_modules
       id: get_modules
-      run: echo "::set-output name=modules::"python -c "from getaddons import get_modules; print(','.join(get_modules('$GITHUB_WORKSPACE/main', depth=3)))" > _MODULES"
+      run: echo "::set-output name=modules::python -c 'from getaddons import get_modules; print(",".join(get_modules("$GITHUB_WORKSPACE/main", depth=3)))'"
         working-directory: /
 
     - name: python get_addons
