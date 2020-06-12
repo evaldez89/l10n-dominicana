@@ -91,8 +91,8 @@ jobs:
         LOG_LEVEL: test
         WITHOUT_DEMO: 'False'
         HOME: /
-        ADDONS_PATH: ${{ steps.get_modules.outputs.modules }}
-        EXTRA_MODULES: ${{ steps.get_paths.outputs.paths }}
+        # ADDONS_PATH: ${{ steps.get_modules.outputs.modules }}
+        # EXTRA_MODULES: ${{ steps.get_paths.outputs.paths }}
   
 
     # - name: Upload repository results
