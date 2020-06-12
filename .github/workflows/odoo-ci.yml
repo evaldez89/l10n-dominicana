@@ -58,7 +58,7 @@ jobs:
     - name: python get_addons
       id: get_paths
       run: echo "::set-output name=paths::python getaddons.py $GITHUB_WORKSPACE/main"
-        working-directory: /
+      working-directory: /
 
   build:
     name: Test
