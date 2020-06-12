@@ -61,11 +61,11 @@ jobs:
         ref: '12.0'
 
     - name: Donwload python addons script
-      run: curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/${_TEST_BRANCH}/resources/getaddons.py -o getaddons.py
+      run: curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/12.0/resources/getaddons.py -o getaddons.py
 
     - name: python get_modules
       id: get_modules
-      run: python -c "from getaddons import get_modules; print(','.join(get_modules('./${REPO_NAME}-ci', depth=3)))"
+      run: python -c "from getaddons import get_modules; print(','.join(get_modules('$GITHUB_WORKSPACE/main', depth=3)))"
 
     - name: python get_addons
       id: get_paths
