@@ -65,12 +65,12 @@ jobs:
 
     - name: python get_modules
       id: get_modules
-      run: echo "::set-output name=modules::python -c 'from getaddons import get_modules; print(",".join(get_modules("$GITHUB_WORKSPACE/main", depth=3)))'"
+      # run: echo "::set-output name=modules::python -c 'from getaddons import get_modules; print(",".join(get_modules("$GITHUB_WORKSPACE/main", depth=3)))'"
       run: python -c "from getaddons import get_modules; print(','.join(get_modules('$GITHUB_WORKSPACE/main', depth=3)))"
 
     - name: python get_addons
       id: get_paths
-      run: echo "::set-output name=paths::python getaddons.py $GITHUB_WORKSPACE/main"
+      # run: echo "::set-output name=paths::python getaddons.py $GITHUB_WORKSPACE/main"
       run: python getaddons.py $GITHUB_WORKSPACE/main
   
     - name: pwd
