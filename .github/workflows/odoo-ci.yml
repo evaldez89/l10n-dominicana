@@ -2,6 +2,10 @@ name: Main odoo Unit Tests
 
 on: [push, pull_request]
 
+env:
+  ACTIONS_RUNNER_DEBUG: true
+  ACTIONS_STEP_DEBUG: true
+
 jobs:
   dependencies:
     name: Pull dependencies
