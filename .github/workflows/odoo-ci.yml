@@ -55,6 +55,7 @@ jobs:
     - name: pwd
       run: |
         pwd
+        echo $ {{ github.workspace }}
   
     - name: Upload repository results
       uses: actions/upload-artifact@v2
