@@ -112,13 +112,13 @@ jobs:
 
     - name: Get the version
       id: tag
-      run: echo "::set-output name=ref::$(echo ${GITHUB_REF:12})"
+      run: echo "::set-output name=ref::$(echo ${GITHUB_REF:12.0})"
 
     - name: Build the tagged Docker image
       run: docker build . --file Dockerfile --tag odoo-dominicana/l10n-dominicana:${{ steps.tag.outputs.ref }}
 
     - name: Run odoo
-      uses: odoo-dominicana/l10n-dominicana:${{steps.tag.outputs.ref}}
+      uses: odoo-dominicana/l10n-dominicana:${{ steps.tag.outputs.ref }}
       with:
         args: odoo
       env:
