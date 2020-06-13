@@ -70,6 +70,8 @@ jobs:
     container:
       image: gcr.io/iterativo/dockerdoo:12.0
       options: --user root
+      volumes:
+        /home/runner/work/l10n-dominicana/l10n-dominicana:/mnt/extra-addons
       env:
         RUN_TESTS: '1'
         PIP_AUTO_INSTALL: '1'
