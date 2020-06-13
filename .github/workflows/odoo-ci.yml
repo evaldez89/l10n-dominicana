@@ -115,7 +115,7 @@ jobs:
       run: echo ::set-output name=ref::$(echo ${GITHUB_REF:12})
 
     - name: Build the tagged Docker image
-      run: docker build . --file Dockerfile --tag odoo-dominicana/l10n-dominicana:${{steps.tag.outputs.ref}}
+      run: docker build . --file Dockerfile --tag odoo-dominicana/l10n-dominicana:${{ steps.tag.outputs.ref }}
 
     - name: Run odoo
       uses: odoo-dominicana/l10n-dominicana:${{steps.tag.outputs.ref}}
