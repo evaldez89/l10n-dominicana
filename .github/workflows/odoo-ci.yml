@@ -14,7 +14,7 @@ jobs:
       image: gcr.io/iterativo/dockerdoo:12.0
       options: --user root
       volumes:
-        - $GITHUB_WORKSPACE:/mnt/extra-addons
+        - /__w/l10n-dominicana/l10n-dominicana:/mnt/extra-addons
 
     outputs:
       get_modules: ${{ steps.get_modules.outputs.modules }}
