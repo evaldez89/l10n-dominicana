@@ -2,39 +2,13 @@ name: Main odoo Unit Tests
 
 on: [push, pull_request]
 
-env:
-  ACTIONS_RUNNER_DEBUG: true
-  ACTIONS_STEP_DEBUG: true
-
 jobs:
   dependencies:
     name: Pull dependencies
     runs-on: ubuntu-latest
-    container:
-      image: gcr.io/iterativo/dockerdoo:12.0
-      options: --user root
-      volumes:
-        - /__w/l10n-dominicana/l10n-dominicana:/mnt/extra-addons
-
     outputs:
       get_modules: ${{ steps.get_modules.outputs.modules }}
       get_paths: ${{ steps.get_paths.outputs.paths }}
-
-    services:
-      postgres:
-        image: postgres:11
-        env:
-          POSTGRES_DB: postgres
-          POSTGRES_USER: odoo
-          POSTGRES_PASSWORD: odoo
-        # needed because the postgres container does not provide a healthcheck
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
 
     steps:
     - name: Checkout local
@@ -81,12 +55,60 @@ jobs:
     - name: pwd
       run: |
         pwd
+  
+    - name: Upload repository results
+      uses: actions/upload-artifact@v2
+      with:
+        name: repositories
+        path: $GITHUB_WORKSPACE
 
-    # - name: Copy folders to odoo
-    #   run: sudo cp -r $GITHUB_WORKSPACE /mnt/extra-addons && sudo chown -R 1000:1000 /mnt/extra-addons
+  test:
+    name: Test
+    needs: ['dependencies']
+    runs-on: ubuntu-latest
+    container:
+      image: gcr.io/iterativo/dockerdoo:12.0
+      options: --user root
+      env:
+        RUN_TESTS: '1'
+        PIP_AUTO_INSTALL: '1'
+        RUN_TESTS: '1'
+        PIP_AUTO_INSTALL: '1'
+        LOG_LEVEL: test
+        WITHOUT_DEMO: 'False'
+        HOME: /opt/odoo
+        EXTRA_ADDONS_PATHS: ${{ needs.dependencies.outputs.get_paths }}
+        EXTRA_MODULES: ${{ needs.dependencies.outputs.get_modules }}
 
-    - run: ls /__w/l10n-dominicana/l10n-dominicana
-    - run: ls /mnt/extra-addons
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: odoo
+          POSTGRES_PASSWORD: odoo
+        # needed because the postgres container does not provide a healthcheck
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+    - run: pwd
+
+    - name: Download repository results
+      uses: actions/download-artifact@v2
+      with:
+        name: repositories
+
+    - name: show local
+      run: ls $GITHUB_WORKSPACE
+
+    - name: Copy folders to odoo
+      run: sudo cp -r $GITHUB_WORKSPACE /mnt/extra-addons && sudo chown -R 1000:1000 /mnt/extra-addons
 
     - name: Run odoo
       uses: docker://gcr.io/iterativo/dockerdoo:12.0
@@ -100,57 +122,3 @@ jobs:
         HOME: /
         EXTRA_ADDONS_PATHS: ${{ steps.get_paths.outputs.paths }}
         EXTRA_MODULES: ${{ steps.get_modules.outputs.modules }}
-  
-
-    # - name: Upload repository results
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: repositories
-    #     path: $GITHUB_WORKSPACE
-
-  # build:
-  #   name: Test
-  #   needs: ['dependencies']
-  #   runs-on: ubuntu-latest
-  #   container:
-  #     image: gcr.io/iterativo/dockerdoo:12.0
-  #     env:
-  #       RUN_TESTS: '1'
-  #       PIP_AUTO_INSTALL: '1'
-  #   services:
-  #     postgres:
-  #       image: postgres:11
-  #       env:
-  #         POSTGRES_DB: postgres
-  #         POSTGRES_USER: odoo
-  #         POSTGRES_PASSWORD: odoo
-  #       # needed because the postgres container does not provide a healthcheck
-  #       options: >-
-  #         --health-cmd pg_isready
-  #         --health-interval 10s
-  #         --health-timeout 5s
-  #         --health-retries 5
-  #       ports:
-  #         - 5432:5432
-  #   steps:
-
-  #   - name: Upload repository results
-  #     uses: actions/download-artifact@v2
-  #     with:
-  #       name: repositories
-  #   - name: show local
-  #     run: ls $GITHUB_WORKSPACE
-  #   - name: Copy folders to odoo
-  #     run: cp -r $GITHUB_WORKSPACE /mnt/extra-addons
-  #   - name: Run odoo
-  #     uses: docker://gcr.io/iterativo/dockerdoo:12.0
-  #     with:
-  #       args: odoo
-  #     env:
-  #       RUN_TESTS: '1'
-  #       PIP_AUTO_INSTALL: '1'
-  #       LOG_LEVEL: test
-  #       WITHOUT_DEMO: 'False'
-  #       HOME: /
-  #       ADDONS_PATH: ${{needs.dependencies.outputs.get_paths}}
-  #       EXTRA_MODULES: ${{needs.dependencies.outputs.get_modules}}
