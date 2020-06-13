@@ -12,7 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: gcr.io/iterativo/dockerdoo:12.0
-      options: --user odoo
+      options: --user root
+      volumes:
+        - $GITHUB_WORKSPACE:/mnt/extra-addons
 
     outputs:
       get_modules: ${{ steps.get_modules.outputs.modules }}
@@ -83,9 +85,10 @@ jobs:
     - name: ls $GITHUB_WORKSPACE
       run: |
         ls $GITHUB_WORKSPACE
+        ls /mnt/extra-addons
 
-    - name: Copy folders to odoo
-      run: sudo cp -r $GITHUB_WORKSPACE /mnt/extra-addons && sudo chown -R 1000:1000 /mnt/extra-addons
+    # - name: Copy folders to odoo
+    #   run: sudo cp -r $GITHUB_WORKSPACE /mnt/extra-addons && sudo chown -R 1000:1000 /mnt/extra-addons
 
     - run: echo ${{ steps.get_modules.outputs.modules }}
     - run: echo ${{ steps.get_paths.outputs.paths }}
