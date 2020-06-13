@@ -99,17 +99,36 @@ jobs:
           - 5432:5432
 
     steps:
-    
     - name: Download repository results
       uses: actions/download-artifact@v2
       with:
         name: repositories
 
     - name: Unzip modules
-      run: sudo apt-get update && sudo apt-get install unzip && unzip repositories.zip -d /mnt/extra-addons
+      run: sudo apt-get update && sudo apt-get install unzip && unzip repositories.zip
 
     - run: pwd
     - run: ls /mnt/extra-addons
+
+    - name: Run odoo
+      uses: docker://gcr.io/cloud-builders/docker
+      entrypoint: bash
+      with:
+        args: |
+        docker build . -t 'gcr.io/$PROJECT_ID/${REPO_NAME}:${BRANCH_NAME}' -f-<<EOF
+        FROM  gcr.io/iterativo/dockerdoo:${_TEST_BRANCH}
+        ENV ODOO_EXTRA_ADDONS $${ODOO_EXTRA_ADDONS}
+
+        USER root
+        RUN sudo mkdir -p $${ODOO_EXTRA_ADDONS}
+        COPY . $${ODOO_EXTRA_ADDONS}
+        RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends build-essential \
+            && find $${ODOO_EXTRA_ADDONS} -name 'requirements.txt' -exec pip3 --no-cache-dir install -r {} \; \
+            && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
+            && rm -rf /var/lib/apt/lists/*
+        RUN sudo chown -R 1000:1000 $${ODOO_EXTRA_ADDONS}
+        USER 1000
+        EOF
 
     - name: Run odoo
       uses: docker://gcr.io/iterativo/dockerdoo:12.0
