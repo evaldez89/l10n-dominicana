@@ -98,18 +98,15 @@ jobs:
           - 5432:5432
 
     steps:
-    - run: pwd
-
+    
     - name: Download repository results
       uses: actions/download-artifact@v2
       with:
         name: repositories
 
-    - name: show local
-      run: ls $GITHUB_WORKSPACE
-
-    - name: Copy folders to odoo
-      run: sudo cp -r $GITHUB_WORKSPACE /mnt/extra-addons && sudo chown -R 1000:1000 /mnt/extra-addons
+    - run: pwd
+    - run: ls /home/runner/work/l10n-dominicana/l10n-dominicana
+    - run: ls /mnt/extra-addons
 
     - name: Run odoo
       uses: docker://gcr.io/iterativo/dockerdoo:12.0
