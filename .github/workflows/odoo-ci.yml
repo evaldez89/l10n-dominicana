@@ -106,7 +106,7 @@ jobs:
         name: repositories
 
     - name: Unzip modules
-      run: unzip repositories.zip -d /mnt/extra-addons
+      run: sudo apt-get update && sudo apt-get install unzip && unzip repositories.zip -d /mnt/extra-addons
 
     - run: pwd
     - run: ls /mnt/extra-addons
