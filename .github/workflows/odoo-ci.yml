@@ -10,8 +10,8 @@ jobs:
   dependencies:
     name: Pull dependencies
     runs-on: ubuntu-latest
-    # container:
-    #   image: gcr.io/iterativo/dockerdoo:12.0
+    container:
+      image: gcr.io/iterativo/dockerdoo:12.0
 
     outputs:
       get_modules: ${{ steps.get_modules.outputs.modules }}
