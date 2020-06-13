@@ -67,7 +67,7 @@ jobs:
         path: repositories.zip
 
     - name: Build the tagged Docker image
-      run: docker build . --file Dockerfile --tag odoo-dominicana/l10n-dominicana:@12.0-actions-gav
+      run: docker build . --file Dockerfile --tag odoo-dominicana/l10n-dominicana:12.0-actions-gav
 
   test:
     name: Test
