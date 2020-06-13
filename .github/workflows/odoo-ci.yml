@@ -9,7 +9,8 @@ jobs:
     outputs:
       get_modules: ${{ steps.get_modules.outputs.modules }}
       get_paths: ${{ steps.get_paths.outputs.paths }}
-
+    env:
+      home: $GITHUB_WORKSPACE
     steps:
     - name: Checkout local
       uses: actions/checkout@v2
@@ -61,7 +62,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: repositories
-        path: /home/runner/work/l10n-dominicana/l10n-dominicana
+        path: ${{ github.workspace }}/*
 
   test:
     name: Test
