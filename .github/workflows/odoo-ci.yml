@@ -72,8 +72,6 @@ jobs:
       env:
         RUN_TESTS: '1'
         PIP_AUTO_INSTALL: '1'
-        RUN_TESTS: '1'
-        PIP_AUTO_INSTALL: '1'
         LOG_LEVEL: test
         WITHOUT_DEMO: 'False'
         HOME: /opt/odoo
