@@ -73,8 +73,6 @@ jobs:
     container:
       image: gcr.io/iterativo/dockerdoo:12.0
       options: --user root
-      volumes:
-        - /home/runner/work/l10n-dominicana/l10n-dominicana:/mnt/extra-addons
       env:
         RUN_TESTS: '1'
         PIP_AUTO_INSTALL: '1'
@@ -107,8 +105,10 @@ jobs:
       with:
         name: repositories
 
+    - name: Unzip modules
+      run: unzip repositories.zip -d /mnt/extra-addons
+
     - run: pwd
-    - run: ls /home/runner/work/l10n-dominicana/l10n-dominicana
     - run: ls /mnt/extra-addons
 
     - name: Run odoo
