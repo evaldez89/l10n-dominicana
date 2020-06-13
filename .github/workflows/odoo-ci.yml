@@ -82,16 +82,11 @@ jobs:
       run: |
         pwd
 
-    - name: ls $GITHUB_WORKSPACE
-      run: |
-        ls $GITHUB_WORKSPACE
-        ls /mnt/extra-addons
-
     # - name: Copy folders to odoo
     #   run: sudo cp -r $GITHUB_WORKSPACE /mnt/extra-addons && sudo chown -R 1000:1000 /mnt/extra-addons
 
-    - run: echo ${{ steps.get_modules.outputs.modules }}
-    - run: echo ${{ steps.get_paths.outputs.paths }}
+    - run: ls /__w/l10n-dominicana/l10n-dominicana
+    - run: ls /mnt/extra-addons
 
     - name: Run odoo
       uses: docker://gcr.io/iterativo/dockerdoo:12.0
