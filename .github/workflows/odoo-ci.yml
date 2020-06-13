@@ -110,28 +110,15 @@ jobs:
     - run: pwd
     - run: ls /mnt/extra-addons
 
-    - name: Run odoo
-      uses: docker://gcr.io/cloud-builders/docker
-      entrypoint: bash
-      with:
-        args: |
-        docker build . -t 'gcr.io/$PROJECT_ID/${REPO_NAME}:${BRANCH_NAME}' -f-<<EOF
-        FROM  gcr.io/iterativo/dockerdoo:${_TEST_BRANCH}
-        ENV ODOO_EXTRA_ADDONS $${ODOO_EXTRA_ADDONS}
+    - name: Get the version
+      id: tag
+      run: echo ::set-output name=ref::$(echo ${GITHUB_REF:12})
 
-        USER root
-        RUN sudo mkdir -p $${ODOO_EXTRA_ADDONS}
-        COPY . $${ODOO_EXTRA_ADDONS}
-        RUN apt-get -qq update && apt-get -qq install -y --no-install-recommends build-essential \
-            && find $${ODOO_EXTRA_ADDONS} -name 'requirements.txt' -exec pip3 --no-cache-dir install -r {} \; \
-            && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
-            && rm -rf /var/lib/apt/lists/*
-        RUN sudo chown -R 1000:1000 $${ODOO_EXTRA_ADDONS}
-        USER 1000
-        EOF
+    - name: Build the tagged Docker image
+      run: docker build . --file Dockerfile --tag odoo-dominicana/l10n-dominicana:${{steps.tag.outputs.ref}}
 
     - name: Run odoo
-      uses: docker://gcr.io/iterativo/dockerdoo:12.0
+      uses: odoo-dominicana/l10n-dominicana:${{steps.tag.outputs.ref}}
       with:
         args: odoo
       env:
