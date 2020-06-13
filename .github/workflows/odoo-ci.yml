@@ -60,7 +60,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: repositories
-        path: $GITHUB_WORKSPACE
+        path: $ {{ github.workspace }}
 
   test:
     name: Test
