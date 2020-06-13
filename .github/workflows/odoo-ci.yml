@@ -55,13 +55,13 @@ jobs:
     - name: pwd
       run: |
         pwd
-        echo $ {{ github.workspace }}
+        ls /home/runner/work/l10n-dominicana/l10n-dominicana
   
     - name: Upload repository results
       uses: actions/upload-artifact@v2
       with:
         name: repositories
-        path: $ {{ github.workspace }}
+        path: /home/runner/work/l10n-dominicana/l10n-dominicana
 
   test:
     name: Test
