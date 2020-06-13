@@ -66,6 +66,13 @@ jobs:
         name: repositories
         path: repositories.zip
 
+    - name: Get the version
+      id: tag
+      run: echo "::set-output name=ref::$(echo ${GITHUB_REF:12.0})"
+  
+    - name: Build the tagged Docker image
+      run: docker build . --file Dockerfile --tag odoo-dominicana/l10n-dominicana:${{ steps.tag.outputs.ref }}
+
   test:
     name: Test
     needs: ['dependencies']
@@ -106,16 +113,6 @@ jobs:
 
     - name: Unzip modules
       run: sudo apt-get update && sudo apt-get install unzip && unzip repositories.zip
-
-    - run: pwd
-    - run: ls /mnt/extra-addons
-
-    - name: Get the version
-      id: tag
-      run: echo "::set-output name=ref::$(echo ${GITHUB_REF:12.0})"
-
-    - name: Build the tagged Docker image
-      run: docker build . --file Dockerfile --tag odoo-dominicana/l10n-dominicana:${{ steps.tag.outputs.ref }}
 
     - name: Run odoo
       uses: odoo-dominicana/l10n-dominicana@12.0-actions-gav
