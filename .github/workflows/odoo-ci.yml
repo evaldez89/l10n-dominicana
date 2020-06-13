@@ -57,12 +57,14 @@ jobs:
       run: |
         pwd
         ls /home/runner/work/l10n-dominicana/l10n-dominicana
-  
+
+    - run: zip -r repositories.zip ${{ github.workspace }}
+
     - name: Upload repository results
       uses: actions/upload-artifact@v2
       with:
         name: repositories
-        path: ${{ github.workspace }}/*
+        path: repositories.zip
 
   test:
     name: Test
