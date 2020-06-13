@@ -71,7 +71,6 @@ jobs:
 
     - name: python get_addons
       id: get_paths
-      run: echo "::set-output name=paths::python getaddons.py $GITHUB_WORKSPACE/main"
       run: |
         output=$(python getaddons.py $GITHUB_WORKSPACE/main)
         echo "::set-output name=modules::$output"
