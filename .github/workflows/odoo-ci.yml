@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: gcr.io/iterativo/dockerdoo:12.0
-      options: --user root
+      options: --user odoo
 
     outputs:
       get_modules: ${{ steps.get_modules.outputs.modules }}
