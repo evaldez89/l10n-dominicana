@@ -73,7 +73,7 @@ jobs:
       id: get_paths
       run: |
         output=$(python getaddons.py $GITHUB_WORKSPACE/main)
-        echo "::set-output name=modules::$output"
+        echo "::set-output name=paths::$output"
   
     - name: pwd
       run: |
@@ -99,8 +99,8 @@ jobs:
         LOG_LEVEL: test
         WITHOUT_DEMO: 'False'
         HOME: /
-        ADDONS_PATH: ${{ steps.get_modules.outputs.modules }}
-        EXTRA_MODULES: ${{ steps.get_paths.outputs.paths }}
+        ADDONS_PATH: ${{ steps.get_paths.outputs.paths }}
+        EXTRA_MODULES: ${{ steps.get_modules.outputs.modules }}
   
 
     # - name: Upload repository results
