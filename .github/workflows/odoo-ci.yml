@@ -99,7 +99,7 @@ jobs:
     #     EXTRA_MODULES: ${{ steps.get_modules.outputs.modules }}
     #     DB_PORT_5432_TCP_ADDR: '127.0.0.1'
 
-    - run: sudo apt-get update && sudo apt-get install zip && zip -r repositories.zip ${{ github.workspace }}
+    - run: sudo apt-get update && sudo apt-get install -y zip && zip -r repositories.zip ${{ github.workspace }}
 
     - name: Upload repository results
       uses: actions/upload-artifact@v2
