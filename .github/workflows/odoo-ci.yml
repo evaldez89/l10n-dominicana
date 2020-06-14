@@ -10,8 +10,8 @@ jobs:
       image: gcr.io/cloud-builders/docker
       options: --user root
       volumes:
-        - $GITHUB_WORKSPACE:/workspace
-        - $GITHUB_WORKSPACE:/mnt-extra-addons
+        - ${{ github.workspace }}:/workspace
+        - ${{ github.workspace }}:/mnt-extra-addons
     outputs:
       get_modules: ${{ steps.get_modules.outputs.modules }}
 
