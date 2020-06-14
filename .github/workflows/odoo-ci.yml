@@ -77,17 +77,9 @@ jobs:
     container:
       image: gcr.io/iterativo/dockerdoo:12.0
       options: --user root
-      env:
-        RUN_TESTS: '1'
-        PIP_AUTO_INSTALL: '1'
-        LOG_LEVEL: test
-        WITHOUT_DEMO: 'False'
-        HOME: /opt/odoo
-        EXTRA_ADDONS_PATHS: ${{ needs.dependencies.outputs.get_paths }}
-        EXTRA_MODULES: ${{ needs.dependencies.outputs.get_modules }}
 
     services:
-      postgres:
+      db:
         image: postgres:11
         env:
           POSTGRES_DB: postgres
@@ -115,3 +107,12 @@ jobs:
       uses: docker://gcr.io/iterativo/dockerdoo:12.0
       with:
         args: odoo
+      env:
+        RUN_TESTS: '1'
+        PIP_AUTO_INSTALL: '1'
+        LOG_LEVEL: test
+        WITHOUT_DEMO: 'False'
+        HOME: /opt/odoo
+        EXTRA_ADDONS_PATHS: ${{ needs.dependencies.outputs.get_paths }}
+        EXTRA_MODULES: ${{ needs.dependencies.outputs.get_modules }}
+  
