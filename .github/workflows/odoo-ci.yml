@@ -60,10 +60,27 @@ jobs:
         path: external-service-addons
         ref: '12.0'
 
-    - name: Run odoo
+    # - name: Run odoo
+    #   uses: docker://gcr.io/iterativo/dockerdoo:12.0
+    #   with:
+    #     args: odoo
+    #   env:
+    #     RUN_TESTS: '1'
+    #     PIP_AUTO_INSTALL: '1'
+    #     LOG_LEVEL: test
+    #     WITHOUT_DEMO: 'False'
+    #     HOME: /
+    #     EXTRA_MODULES: ${{ steps.get_modules.outputs.modules }}
+
+    - name: Run pwd and ls on dockerdoo
       uses: docker://gcr.io/iterativo/dockerdoo:12.0
       with:
-        args: odoo
+        entrypoint: bash
+        args: |
+          pwd
+          ls .
+          ls /mnt/extra-addons
+
       env:
         RUN_TESTS: '1'
         PIP_AUTO_INSTALL: '1'
