@@ -112,14 +112,6 @@ jobs:
       run: sudo apt-get update && sudo apt-get install unzip && unzip repositories.zip
 
     - name: Run odoo
-      uses: odoo-dominicana/l10n-dominicana@12.0-actions-gav
+      uses: docker://gcr.io/iterativo/dockerdoo:12.0
       with:
         args: odoo
-      env:
-        RUN_TESTS: '1'
-        PIP_AUTO_INSTALL: '1'
-        LOG_LEVEL: test
-        WITHOUT_DEMO: 'False'
-        HOME: /
-        EXTRA_ADDONS_PATHS: ${{ steps.get_paths.outputs.paths }}
-        EXTRA_MODULES: ${{ steps.get_modules.outputs.modules }}

@@ -1,5 +1,5 @@
 FROM  gcr.io/iterativo/dockerdoo:12.0
-ENV ODOO_EXTRA_ADDONS /mnt/extra-addosn
+ENV ODOO_EXTRA_ADDONS /mnt/extra-addons
 USER root
 RUN sudo mkdir -p ${ODOO_EXTRA_ADDONS}
 COPY . ${ODOO_EXTRA_ADDONS}
