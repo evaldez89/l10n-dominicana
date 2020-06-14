@@ -77,7 +77,7 @@ jobs:
       with:
         entrypoint: bash
         args: |
-          pwd
+          ls
 
       env:
         RUN_TESTS: '1'
