@@ -52,10 +52,6 @@ jobs:
     name: Test
     # needs: ['dependencies']
     runs-on: ubuntu-latest
-    container:
-      image: gcr.io/iterativo/dockerdoo:12.0
-      options: --user root
-
     services:
       db:
         image: postgres:11
@@ -77,11 +73,11 @@ jobs:
     - name: Login to GitHub Package Registry
       run: docker login docker.pkg.github.com -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Run odoo
-      uses: docker://docker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0-actions-gav
-      with:
-        args: odoo
-        repo-token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Pull Docker image
+      run: docker pull docker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0-actions-gav
+
+    - name: Build the image
+      run: docker run --name builder -v $GITHUB_WORKSPACE:/github/workspace -w /github/workspacedocker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0-actions-gav
       env:
         RUN_TESTS: '1'
         PIP_AUTO_INSTALL: '1'
