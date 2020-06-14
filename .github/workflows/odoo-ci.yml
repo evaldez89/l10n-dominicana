@@ -42,17 +42,19 @@ jobs:
       uses: docker/build-push-action@v1
       with:
         dockerfile: main/Dockerfile
+        cache_froms: gcr.io/iterativo/dockerdoo:12.0
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: docker.pkg.github.com
         repository: odoo-dominicana/l10n-dominicana/odoord
         tag_with_ref: true
+        build_args: RUN_TESTS='1', PIP_AUTO_INSTALL='1',LOG_LEVEL=test,WITHOUT_DEMO='False'
       env:
-        RUN_TESTS: '1'
-        PIP_AUTO_INSTALL: '1'
-        LOG_LEVEL: test
-        WITHOUT_DEMO: 'False'
-        HOME: /opt/odoo
+        # RUN_TESTS: '1'
+        # PIP_AUTO_INSTALL: '1'
+        # LOG_LEVEL: test
+        # WITHOUT_DEMO: 'False'
+        HOME: /
         EXTRA_MODULES: ${{ needs.dependencies.outputs.get_modules }}
 
   test:
