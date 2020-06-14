@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: gcr.io/cloud-builders/docker
+      options: --user root
+      volumes:
+        - $GITHUB_WORKSPACE:/workspace
+        - $GITHUB_WORKSPACE:/mnt-extra-addons
     outputs:
       get_modules: ${{ steps.get_modules.outputs.modules }}
 
