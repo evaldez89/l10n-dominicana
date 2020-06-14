@@ -77,7 +77,7 @@ jobs:
       run: docker pull docker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0-actions-gav
 
     - name: Build the image
-      run: docker run --name builder -v $GITHUB_WORKSPACE:/github/workspace -w /github/workspacedocker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0-actions-gav
+      run: docker run --name builder -v $GITHUB_WORKSPACE:/github/workspace -w /github/workspace docker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0-actions-gav
       env:
         RUN_TESTS: '1'
         PIP_AUTO_INSTALL: '1'
