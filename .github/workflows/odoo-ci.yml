@@ -8,9 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       get_modules: ${{ steps.get_modules.outputs.modules }}
-      get_paths: ${{ steps.get_paths.outputs.paths }}
-    env:
-      home: $GITHUB_WORKSPACE
+
     steps:
     - name: Checkout local
       uses: actions/checkout@v2
@@ -26,12 +24,6 @@ jobs:
         output=$(python -c "from getaddons import get_modules; print(','.join(get_modules('$GITHUB_WORKSPACE/main', depth=3)))")
         echo "::set-output name=modules::$output"
 
-    - name: python get_addons
-      id: get_paths
-      run: |
-        output=$(python getaddons.py $GITHUB_WORKSPACE)
-        echo "::set-output name=paths::$output"
-
     - name: Checkout ITPP-Labs pos addons
       uses: actions/checkout@v2
       with:
@@ -46,11 +38,6 @@ jobs:
         path: external-service-addons
         ref: '12.0'
 
-    - name: pwd
-      run: |
-        pwd
-        ls $GITHUB_WORKSPACE/main
-
     - name: Push to GitHub Packages
       uses: docker/build-push-action@v1
       with:
@@ -60,14 +47,6 @@ jobs:
         registry: docker.pkg.github.com
         repository: odoo-dominicana/l10n-dominicana/odoord
         tag_with_ref: true
-
-    - run: zip -r repositories.zip ${{ github.workspace }}
-
-    - name: Upload repository results
-      uses: actions/upload-artifact@v2
-      with:
-        name: repositories
-        path: repositories.zip
 
   test:
     name: Test
@@ -94,20 +73,6 @@ jobs:
           - 5432:5432
 
     steps:
-    - name: Download repository results
-      uses: actions/download-artifact@v2
-      with:
-        name: repositories
-
-    - run: ls .
-    - run: ls main
-
-    # - name: Build the tagged Docker image
-    #   run: docker build . --file Dockerfile --tag odoo-dominicana/l10n-dominicana:12.0-actions-gav
-    #   working-directory: main
-
-    - name: Unzip modules
-      run: sudo apt-get update && sudo apt-get install unzip && unzip repositories.zip
 
     - name: Run odoo
       uses: docker://docker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0-actions-gav
