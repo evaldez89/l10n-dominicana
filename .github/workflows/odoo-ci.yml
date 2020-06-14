@@ -50,7 +50,7 @@ jobs:
 
   test:
     name: Test
-    needs: ['dependencies']
+    # needs: ['dependencies']
     runs-on: ubuntu-latest
     container:
       image: gcr.io/iterativo/dockerdoo:12.0
