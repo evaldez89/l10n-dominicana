@@ -24,13 +24,6 @@ jobs:
         path: pos-addons
         ref: '12.0'
 
-    - name: Checkout camptocamp cloud addons
-      uses: actions/checkout@v2
-      with:
-        repository: camptocamp/odoo-cloud-platform
-        path: odoo-cloud-platform
-        ref: '12.0'
-
     - name: Checkout indexa external services
       uses: actions/checkout@v2
       with:
@@ -57,6 +50,15 @@ jobs:
       run: |
         pwd
         ls $GITHUB_WORKSPACE/main
+
+    - name: Push to GitHub Packages
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        registry: docker.pkg.github.com
+        repository: odoo-dominicana/l10n-dominicana/odoord:12.0
+        tag_with_ref: true
 
     - run: zip -r repositories.zip ${{ github.workspace }}
 
@@ -99,15 +101,15 @@ jobs:
     - run: ls .
     - run: ls main
 
-    - name: Build the tagged Docker image
-      run: docker build . --file Dockerfile --tag odoo-dominicana/l10n-dominicana:12.0-actions-gav
-      working-directory: main
+    # - name: Build the tagged Docker image
+    #   run: docker build . --file Dockerfile --tag odoo-dominicana/l10n-dominicana:12.0-actions-gav
+    #   working-directory: main
 
     - name: Unzip modules
       run: sudo apt-get update && sudo apt-get install unzip && unzip repositories.zip
 
     - name: Run odoo
-      uses: docker://odoo-dominicana/l10n-dominicana:12.0-actions-gav
+      uses: docker://docker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0
       with:
         args: odoo
       env:
