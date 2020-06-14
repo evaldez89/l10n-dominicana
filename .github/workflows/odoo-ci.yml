@@ -79,7 +79,6 @@ jobs:
         args: |
           pwd
           ls .
-          ls /mnt/extra-addons
 
       env:
         RUN_TESTS: '1'
