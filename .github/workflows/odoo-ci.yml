@@ -87,4 +87,3 @@ jobs:
 
     - name: Build the image
       run: docker run --name odoo docker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0-actions-gav
- 
