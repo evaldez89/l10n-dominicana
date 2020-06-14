@@ -48,12 +48,12 @@ jobs:
         registry: docker.pkg.github.com
         repository: odoo-dominicana/l10n-dominicana/odoord
         tag_with_ref: true
-        build_args: RUN_TESTS='1', PIP_AUTO_INSTALL='1',LOG_LEVEL=test,WITHOUT_DEMO='False'
+        # build_args: RUN_TESTS='1', PIP_AUTO_INSTALL='1',LOG_LEVEL=test,WITHOUT_DEMO='False'
       env:
-        # RUN_TESTS: '1'
-        # PIP_AUTO_INSTALL: '1'
-        # LOG_LEVEL: test
-        # WITHOUT_DEMO: 'False'
+        RUN_TESTS: '1'
+        PIP_AUTO_INSTALL: '1'
+        LOG_LEVEL: test
+        WITHOUT_DEMO: 'False'
         HOME: /
         EXTRA_MODULES: ${{ needs.dependencies.outputs.get_modules }}
 
