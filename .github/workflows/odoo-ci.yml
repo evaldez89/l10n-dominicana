@@ -16,7 +16,7 @@ jobs:
           POSTGRES_DB: postgres
           POSTGRES_USER: odoo
           POSTGRES_PASSWORD: odoo
-        # needed because the postgres container does not provide a healthcheck
+        # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -65,7 +65,7 @@ jobs:
         LOG_LEVEL: test
         WITHOUT_DEMO: 'False'
         EXTRA_MODULES: ${{ steps.get_modules.outputs.modules }}
-        DB_PORT_5432_TCP_ADDR: localhost
+        DB_PORT_5432_TCP_ADDR: '127.0.0.1'
 
     - run: zip -r repositories.zip ${{ github.workspace }}
 
