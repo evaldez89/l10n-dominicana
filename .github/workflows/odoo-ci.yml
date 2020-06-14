@@ -66,10 +66,6 @@ jobs:
         name: repositories
         path: repositories.zip
 
-    - name: Build the tagged Docker image
-      run: docker build . --file Dockerfile --tag odoo-dominicana/l10n-dominicana:12.0-actions-gav
-      working-directory: main
-
   test:
     name: Test
     needs: ['dependencies']
@@ -100,11 +96,18 @@ jobs:
       with:
         name: repositories
 
+    - run: ls .
+    - run: ls main
+
+    - name: Build the tagged Docker image
+      run: docker build . --file Dockerfile --tag odoo-dominicana/l10n-dominicana:12.0-actions-gav
+      working-directory: main
+
     - name: Unzip modules
       run: sudo apt-get update && sudo apt-get install unzip && unzip repositories.zip
 
     - name: Run odoo
-      uses: docker://gcr.io/iterativo/dockerdoo:12.0
+      uses: docker://odoo-dominicana/l10n-dominicana:12.0-actions-gav
       with:
         args: odoo
       env:
