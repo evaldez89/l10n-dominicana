@@ -55,10 +55,10 @@ jobs:
         ref: '12.0'
 
     - name: Build the tagged Docker image
-      run: docker build . --file main/Dockerfile --tag odoo-dominicana/l10n-dominicana:12.0-actions-gav
+      run: docker build --cache-from gcr.io/iterativo/dockerdoo:12.0 . --file main/Dockerfile --tag odoo-dominicana/l10n-dominicana:12.0-actions-gav
 
     - name: Run the image
-      run: docker run --name odoo odoo-dominicana/l10n-dominicana:12.0-actions-gav
+      run: docker run -e RUN_TESTS=$RUN_TESTS -e EXTRA_MODULES=$EXTRA_MODULES --name odoo odoo-dominicana/l10n-dominicana:12.0-actions-gav
       env:
         RUN_TESTS: '1'
         PIP_AUTO_INSTALL: '1'
