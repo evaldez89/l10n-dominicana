@@ -38,6 +38,27 @@ jobs:
         path: external-service-addons
         ref: '12.0'
 
+    - name: Build the tagged Docker image
+      run: docker build . --file main/Dockerfile --tag odoo-dominicana/l10n-dominicana:12.0-actions-gav
+
+    - name: Run the image
+      run: docker run --name odoo odoo-dominicana/l10n-dominicana:12.0-actions-gav
+      env:
+        RUN_TESTS: '1'
+        PIP_AUTO_INSTALL: '1'
+        LOG_LEVEL: test
+        WITHOUT_DEMO: 'False'
+        EXTRA_MODULES: ${{ steps.get_modules.outputs.get_modules }}
+        DB_PORT_5432_TCP_ADDR: localhost
+
+    - run: zip -r repositories.zip ${{ github.workspace }}
+
+    - name: Upload repository results
+      uses: actions/upload-artifact@v2
+      with:
+        name: repositories
+        path: repositories.zip
+
     - name: Push to GitHub Packages
       uses: docker/build-push-action@v1
       with:
