@@ -75,9 +75,8 @@ jobs:
     - name: Run pwd and ls on dockerdoo
       uses: docker://gcr.io/iterativo/dockerdoo:12.0
       with:
-        entrypoint: bash
-        args: |
-          ls
+        # entrypoint: bash
+        args: ls
 
       env:
         RUN_TESTS: '1'
