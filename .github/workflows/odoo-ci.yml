@@ -64,7 +64,7 @@ jobs:
         PIP_AUTO_INSTALL: '1'
         LOG_LEVEL: test
         WITHOUT_DEMO: 'False'
-        EXTRA_MODULES: ${{ steps.get_modules.outputs.get_modules }}
+        EXTRA_MODULES: ${{ steps.get_modules.outputs.modules }}
         DB_PORT_5432_TCP_ADDR: localhost
 
     - run: zip -r repositories.zip ${{ github.workspace }}
