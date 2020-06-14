@@ -78,6 +78,7 @@ jobs:
       uses: docker://docker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0-actions-gav
       with:
         args: odoo
+        repo-token: ${{ secrets.GITHUB_TOKEN }}
       env:
         RUN_TESTS: '1'
         PIP_AUTO_INSTALL: '1'
