@@ -48,7 +48,6 @@ jobs:
         registry: docker.pkg.github.com
         repository: odoo-dominicana/l10n-dominicana/odoord
         tag_with_ref: true
-        # build_args: RUN_TESTS='1', PIP_AUTO_INSTALL='1',LOG_LEVEL=test,WITHOUT_DEMO='False'
       env:
         RUN_TESTS: '1'
         PIP_AUTO_INSTALL: '1'
@@ -56,14 +55,12 @@ jobs:
         WITHOUT_DEMO: 'False'
         HOME: /
         EXTRA_MODULES: ${{ needs.dependencies.outputs.get_modules }}
+        DB_PORT_5432_TCP_ADDR: localhost
 
   test:
     name: Test
     needs: ['dependencies']
     runs-on: ubuntu-latest
-    container:
-      image: gcr.io/iterativo/dockerdoo:12.0
-      options: --user root
 
     services:
       db:
@@ -89,5 +86,5 @@ jobs:
       run: docker pull docker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0-actions-gav
 
     - name: Build the image
-      run: docker run --name builder -w /github/workspace docker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0-actions-gav
+      run: docker run --name odoo docker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0-actions-gav
  
