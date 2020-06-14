@@ -58,7 +58,7 @@ jobs:
       run: docker build --cache-from gcr.io/iterativo/dockerdoo:12.0 . --file main/Dockerfile --tag odoo-dominicana/l10n-dominicana:12.0-actions-gav
 
     - name: Run the image
-      run: docker run -e RUN_TESTS -e EXTRA_MODULES -e PIP_AUTO_INSTALL -e LOG_LEVEL -e WITHOUT_DEMO --name odoo odoo-dominicana/l10n-dominicana:12.0-actions-gav
+      run: docker run -e RUN_TESTS -e EXTRA_MODULES -e PIP_AUTO_INSTALL -e LOG_LEVEL -e WITHOUT_DEMO -e DB_PORT_5432_TCP_ADDR --name odoo odoo-dominicana/l10n-dominicana:12.0-actions-gav
       env:
         RUN_TESTS: '1'
         PIP_AUTO_INSTALL: '1'
