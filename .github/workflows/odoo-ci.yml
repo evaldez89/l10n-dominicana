@@ -40,11 +40,11 @@ jobs:
     - name: Download python addons script
       run: curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/12.0/resources/getaddons.py -o getaddons.py
 
-    - name: python get_modules
-      id: get_modules
-      run: |
-        output=$(python -c "from getaddons import get_modules; print(','.join(get_modules('$GITHUB_WORKSPACE/main', depth=3)))")
-        echo "::set-output name=modules::$output"
+    # - name: python get_modules
+    #   id: get_modules
+    #   run: |
+    #     output=$(python -c "from getaddons import get_modules; print(','.join(get_modules('$GITHUB_WORKSPACE/main', depth=3)))")
+    #     echo "::set-output name=modules::$output"
 
     - name: Checkout ITPP-Labs pos addons
       uses: actions/checkout@v2
