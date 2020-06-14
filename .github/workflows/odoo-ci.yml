@@ -2,51 +2,51 @@ name: Main odoo Unit Tests
 
 on: [push, pull_request]
 
-jobs:
-  dependencies:
-    name: Pull dependencies
-    runs-on: ubuntu-latest
-    outputs:
-      get_modules: ${{ steps.get_modules.outputs.modules }}
+# jobs:
+#   dependencies:
+#     name: Pull dependencies
+#     runs-on: ubuntu-latest
+#     outputs:
+#       get_modules: ${{ steps.get_modules.outputs.modules }}
 
-    steps:
-    - name: Checkout local
-      uses: actions/checkout@v2
-      with:
-        path: main
+#     steps:
+#     - name: Checkout local
+#       uses: actions/checkout@v2
+#       with:
+#         path: main
 
-    - name: Download python addons script
-      run: curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/12.0/resources/getaddons.py -o getaddons.py
+#     - name: Download python addons script
+#       run: curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/12.0/resources/getaddons.py -o getaddons.py
 
-    - name: python get_modules
-      id: get_modules
-      run: |
-        output=$(python -c "from getaddons import get_modules; print(','.join(get_modules('$GITHUB_WORKSPACE/main', depth=3)))")
-        echo "::set-output name=modules::$output"
+#     - name: python get_modules
+#       id: get_modules
+#       run: |
+#         output=$(python -c "from getaddons import get_modules; print(','.join(get_modules('$GITHUB_WORKSPACE/main', depth=3)))")
+#         echo "::set-output name=modules::$output"
 
-    - name: Checkout ITPP-Labs pos addons
-      uses: actions/checkout@v2
-      with:
-        repository: itpp-labs/pos-addons
-        path: pos-addons
-        ref: '12.0'
+#     - name: Checkout ITPP-Labs pos addons
+#       uses: actions/checkout@v2
+#       with:
+#         repository: itpp-labs/pos-addons
+#         path: pos-addons
+#         ref: '12.0'
 
-    - name: Checkout indexa external services
-      uses: actions/checkout@v2
-      with:
-        repository: indexa-git/external_service_addons
-        path: external-service-addons
-        ref: '12.0'
+#     - name: Checkout indexa external services
+#       uses: actions/checkout@v2
+#       with:
+#         repository: indexa-git/external_service_addons
+#         path: external-service-addons
+#         ref: '12.0'
 
-    - name: Push to GitHub Packages
-      uses: docker/build-push-action@v1
-      with:
-        dockerfile: main/Dockerfile
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-        registry: docker.pkg.github.com
-        repository: odoo-dominicana/l10n-dominicana/odoord
-        tag_with_ref: true
+#     - name: Push to GitHub Packages
+#       uses: docker/build-push-action@v1
+#       with:
+#         dockerfile: main/Dockerfile
+#         username: ${{ github.actor }}
+#         password: ${{ secrets.GITHUB_TOKEN }}
+#         registry: docker.pkg.github.com
+#         repository: odoo-dominicana/l10n-dominicana/odoord
+#         tag_with_ref: true
 
   test:
     name: Test
@@ -73,6 +73,9 @@ jobs:
           - 5432:5432
 
     steps:
+
+    - name: Login to GitHub Package Registry
+      run: docker login docker.pkg.github.com -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
 
     - name: Run odoo
       uses: docker://docker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0-actions-gav
