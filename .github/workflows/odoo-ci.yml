@@ -7,7 +7,7 @@ jobs:
     name: Pull dependencies
     runs-on: ubuntu-latest
     container:
-      image: gcr.io/cloud-builders/docker
+      image: gcr.io/iterativo/dockerdoo:12.0
       options: --user root
       volumes:
         - ${{ github.workspace }}:/workspace
@@ -61,17 +61,33 @@ jobs:
         ref: '12.0'
 
     - name: Build the tagged Docker image
-      run: docker build --cache-from gcr.io/iterativo/dockerdoo:12.0 . --file main/Dockerfile --tag odoo-dominicana/l10n-dominicana:12.0-actions-gav
+      uses: gcr.io/cloud-builders/docker
+      with:
+        entrypoint: bash
+        args: docker build --cache-from gcr.io/iterativo/dockerdoo:12.0 . --file main/Dockerfile --tag odoo-dominicana/l10n-dominicana:12.0-actions-gav
 
-    - name: Run the image
-      run: docker run -e RUN_TESTS -e EXTRA_MODULES -e PIP_AUTO_INSTALL -e LOG_LEVEL -e WITHOUT_DEMO --name odoo odoo-dominicana/l10n-dominicana:12.0-actions-gav
-      env:
-        RUN_TESTS: '1'
-        PIP_AUTO_INSTALL: '1'
-        LOG_LEVEL: test
-        WITHOUT_DEMO: 'False'
-        EXTRA_MODULES: ${{ steps.get_modules.outputs.modules }}
-        DB_PORT_5432_TCP_ADDR: '127.0.0.1'
+    - name: Run the Docker image
+      uses: gcr.io/cloud-builders/docker
+      with:
+        entrypoint: bash
+        args: docker run -e RUN_TESTS -e EXTRA_MODULES -e PIP_AUTO_INSTALL -e LOG_LEVEL -e WITHOUT_DEMO --name odoo odoo-dominicana/l10n-dominicana:12.0-actions-gav
+        env:
+          RUN_TESTS: '1'
+          PIP_AUTO_INSTALL: '1'
+          LOG_LEVEL: test
+          WITHOUT_DEMO: 'False'
+          EXTRA_MODULES: ${{ steps.get_modules.outputs.modules }}
+          DB_PORT_5432_TCP_ADDR: '127.0.0.1'
+
+    # - name: Run the image
+    #   run: docker run -e RUN_TESTS -e EXTRA_MODULES -e PIP_AUTO_INSTALL -e LOG_LEVEL -e WITHOUT_DEMO --name odoo odoo-dominicana/l10n-dominicana:12.0-actions-gav
+    #   env:
+    #     RUN_TESTS: '1'
+    #     PIP_AUTO_INSTALL: '1'
+    #     LOG_LEVEL: test
+    #     WITHOUT_DEMO: 'False'
+    #     EXTRA_MODULES: ${{ steps.get_modules.outputs.modules }}
+    #     DB_PORT_5432_TCP_ADDR: '127.0.0.1'
 
     - run: zip -r repositories.zip ${{ github.workspace }}
 
