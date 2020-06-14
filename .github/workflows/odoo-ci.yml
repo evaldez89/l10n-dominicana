@@ -57,7 +57,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: docker.pkg.github.com
-        repository: odoo-dominicana/l10n-dominicana/odoord:12.0
+        repository: odoo-dominicana/l10n-dominicana/odoord
         tag_with_ref: true
 
     - run: zip -r repositories.zip ${{ github.workspace }}
@@ -109,7 +109,7 @@ jobs:
       run: sudo apt-get update && sudo apt-get install unzip && unzip repositories.zip
 
     - name: Run odoo
-      uses: docker://docker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0
+      uses: docker://docker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0-actions-gav
       with:
         args: odoo
       env:
