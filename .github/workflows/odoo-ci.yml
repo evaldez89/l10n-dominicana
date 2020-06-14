@@ -60,22 +60,34 @@ jobs:
         path: external-service-addons
         ref: '12.0'
 
-    - name: Build the tagged Docker image
-      uses: docker://gcr.io/cloud-builders/docker
+    - name: Run odoo
+      uses: docker://gcr.io/iterativo/dockerdoo:12.0
       with:
-        args: build --cache-from gcr.io/iterativo/dockerdoo:12.0 . --file main/Dockerfile --tag odoo-dominicana/l10n-dominicana:12.0-actions-gav
-
-    - name: Run the Docker image
-      uses: docker://gcr.io/cloud-builders/docker
-      with:
-        args: run -e RUN_TESTS -e EXTRA_MODULES -e PIP_AUTO_INSTALL -e LOG_LEVEL -e WITHOUT_DEMO --name odoo odoo-dominicana/l10n-dominicana:12.0-actions-gav
+        args: odoo
       env:
         RUN_TESTS: '1'
         PIP_AUTO_INSTALL: '1'
         LOG_LEVEL: test
         WITHOUT_DEMO: 'False'
+        HOME: /
         EXTRA_MODULES: ${{ steps.get_modules.outputs.modules }}
-        DB_PORT_5432_TCP_ADDR: '127.0.0.1'
+
+    # - name: Build the tagged Docker image
+    #   uses: docker://gcr.io/cloud-builders/docker
+    #   with:
+    #     args: build --cache-from gcr.io/iterativo/dockerdoo:12.0 . --file main/Dockerfile --tag odoo-dominicana/l10n-dominicana:12.0-actions-gav
+
+    # - name: Run the Docker image
+    #   uses: docker://gcr.io/cloud-builders/docker
+    #   with:
+    #     args: run -e RUN_TESTS -e EXTRA_MODULES -e PIP_AUTO_INSTALL -e LOG_LEVEL -e WITHOUT_DEMO --name odoo odoo-dominicana/l10n-dominicana:12.0-actions-gav
+    #   env:
+    #     RUN_TESTS: '1'
+    #     PIP_AUTO_INSTALL: '1'
+    #     LOG_LEVEL: test
+    #     WITHOUT_DEMO: 'False'
+    #     EXTRA_MODULES: ${{ steps.get_modules.outputs.modules }}
+    #     DB_PORT_5432_TCP_ADDR: '127.0.0.1'
 
     # - name: Run the image
     #   run: docker run -e RUN_TESTS -e EXTRA_MODULES -e PIP_AUTO_INSTALL -e LOG_LEVEL -e WITHOUT_DEMO --name odoo odoo-dominicana/l10n-dominicana:12.0-actions-gav
