@@ -96,7 +96,7 @@ jobs:
     - name: Download python addons script
       run: curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/12.0/resources/getaddons.py -o getaddons.py
 
-      - name: ls /github/workspace
+    - name: ls /github/workspace
       uses: docker://gcr.io/iterativo/dockerdoo:12.0
       with:
         args: ls /github/workspace
