@@ -15,22 +15,6 @@ jobs:
     outputs:
       get_modules: ${{ steps.get_modules.outputs.modules }}
 
-    services:
-      db:
-        image: postgres:11
-        env:
-          POSTGRES_DB: postgres
-          POSTGRES_USER: odoo
-          POSTGRES_PASSWORD: odoo
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
-
     steps:
     - name: Checkout local
       uses: actions/checkout@v2
@@ -60,57 +44,6 @@ jobs:
         path: external-service-addons
         ref: '12.0'
 
-    - name: Move files to extra-addons
-      uses: docker://gcr.io/iterativo/dockerdoo:12.0
-      with:
-        args: cp -r . /mnt/extra-addons
-
-    - name: chown home for pypy
-      uses: docker://gcr.io/iterativo/dockerdoo:12.0
-      with:
-        args: sudo chown -R 1000:1000 /github/home
-
-    - name: Run odoo
-      uses: docker://gcr.io/iterativo/dockerdoo:12.0
-      with:
-        args: odoo
-      env:
-        RUN_TESTS: '1'
-        PIP_AUTO_INSTALL: '1'
-        LOG_LEVEL: test
-        WITHOUT_DEMO: 'False'
-        HOME: /
-        EXTRA_MODULES: ${{ steps.get_modules.outputs.modules }}
-        # EXTRA_ADDONS_PATHS: /github/workspace
-        ODOO_EXTRA_ADDONS: /github/workspace
-
-    # - name: Build the tagged Docker image
-    #   uses: docker://gcr.io/cloud-builders/docker
-    #   with:
-    #     args: build --cache-from gcr.io/iterativo/dockerdoo:12.0 . --file main/Dockerfile --tag odoo-dominicana/l10n-dominicana:12.0-actions-gav
-
-    # - name: Run the Docker image
-    #   uses: docker://gcr.io/cloud-builders/docker
-    #   with:
-    #     args: run -e RUN_TESTS -e EXTRA_MODULES -e PIP_AUTO_INSTALL -e LOG_LEVEL -e WITHOUT_DEMO --name odoo odoo-dominicana/l10n-dominicana:12.0-actions-gav
-    #   env:
-    #     RUN_TESTS: '1'
-    #     PIP_AUTO_INSTALL: '1'
-    #     LOG_LEVEL: test
-    #     WITHOUT_DEMO: 'False'
-    #     EXTRA_MODULES: ${{ steps.get_modules.outputs.modules }}
-    #     DB_PORT_5432_TCP_ADDR: '127.0.0.1'
-
-    # - name: Run the image
-    #   run: docker run -e RUN_TESTS -e EXTRA_MODULES -e PIP_AUTO_INSTALL -e LOG_LEVEL -e WITHOUT_DEMO --name odoo odoo-dominicana/l10n-dominicana:12.0-actions-gav
-    #   env:
-    #     RUN_TESTS: '1'
-    #     PIP_AUTO_INSTALL: '1'
-    #     LOG_LEVEL: test
-    #     WITHOUT_DEMO: 'False'
-    #     EXTRA_MODULES: ${{ steps.get_modules.outputs.modules }}
-    #     DB_PORT_5432_TCP_ADDR: '127.0.0.1'
-
     - run: sudo apt-get update && sudo apt-get install -y zip && zip -r repositories.zip .
 
     - name: Upload repository results
@@ -118,25 +51,6 @@ jobs:
       with:
         name: repositories
         path: repositories.zip
-
-    - name: Push to GitHub Packages
-      uses: docker/build-push-action@v1
-      with:
-        dockerfile: main/Dockerfile
-        cache_froms: gcr.io/iterativo/dockerdoo:12.0
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-        registry: docker.pkg.github.com
-        repository: odoo-dominicana/l10n-dominicana/odoord
-        tag_with_ref: true
-      env:
-        RUN_TESTS: '1'
-        PIP_AUTO_INSTALL: '1'
-        LOG_LEVEL: test
-        WITHOUT_DEMO: 'False'
-        HOME: /
-        EXTRA_MODULES: ${{ steps.get_modules.outputs.get_modules }}
-        DB_PORT_5432_TCP_ADDR: localhost
 
   test:
     name: Test
@@ -160,18 +74,46 @@ jobs:
           - 5432:5432
 
     steps:
-    - name: Login to GitHub Package Registry
-      run: docker login docker.pkg.github.com -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+    - name: Download  repository results
+      uses: actions/download-artifact@v2
+      with:
+        name: repositories
 
-    - name: Pull Docker image
-      run: docker pull docker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0-actions-gav
+    - name: chown home for pypy
+      uses: docker://gcr.io/iterativo/dockerdoo:12.0
+      with:
+        args: sudo chown -R 1000:1000 /github/home
 
-    - name: Build the image
-      run: docker run --name odoo docker.pkg.github.com/odoo-dominicana/l10n-dominicana/odoord:12.0-actions-gav
+    - name: Run odoo
+      uses: docker://gcr.io/iterativo/dockerdoo:12.0
+      with:
+        args: odoo
       env:
         RUN_TESTS: '1'
         PIP_AUTO_INSTALL: '1'
         LOG_LEVEL: test
         WITHOUT_DEMO: 'False'
-        EXTRA_MODULES: ${{ needs.dependencies.outputs.get_modules }}
-        DB_PORT_5432_TCP_ADDR: localhost
+        EXTRA_MODULES: ${{ dependencies.outputs.get_modules.modules }}
+        ODOO_EXTRA_ADDONS: /github/workspace
+
+  build:
+    name: Build & Push Image
+    needs: ['test']
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download  repository results
+      uses: actions/download-artifact@v2
+      with:
+        name: repositories
+
+    - name: Push to GitHub Packages
+      uses: docker/build-push-action@v1
+      with:
+        dockerfile: main/Dockerfile
+        cache_froms: gcr.io/iterativo/dockerdoo:12.0
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+        registry: docker.pkg.github.com
+        repository: odoo-dominicana/l10n-dominicana/odoord
+        tag_with_ref: true
