@@ -11,7 +11,6 @@ jobs:
       options: --user root
       volumes:
         - ${{ github.workspace }}:/workspace
-        - ${{ github.workspace }}:/mnt-extra-addons
     outputs:
       get_modules: ${{ steps.get_modules.outputs.modules }}
 
@@ -56,6 +55,11 @@ jobs:
     name: Test
     needs: ['dependencies']
     runs-on: ubuntu-latest
+    container:
+      image: gcr.io/iterativo/dockerdoo:12.0
+      options: --user root
+      volumes:
+        - ${{ github.workspace }}:/workspace
 
     services:
       db:
