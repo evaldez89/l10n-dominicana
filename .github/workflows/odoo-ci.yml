@@ -65,10 +65,10 @@ jobs:
       with:
         args: cp -r . /mnt/extra-addons
 
-    - name: Chown builder for pypy
+    - name: chown home for pypy
       uses: docker://gcr.io/iterativo/dockerdoo:12.0
       with:
-        args: chown -R 1000:1000 /github/home/.local
+        args: chown -R 1000:1000 /github/home
 
     - name: Run odoo
       uses: docker://gcr.io/iterativo/dockerdoo:12.0
