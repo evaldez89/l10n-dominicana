@@ -43,7 +43,8 @@ jobs:
         path: external-service-addons
         ref: '12.0'
 
-    - run: sudo apt-get update && sudo apt-get install -y zip && zip -r repositories.zip .
+    - name: Zip repositories for upload
+      run: sudo apt-get update && sudo apt-get install -y zip && zip -r repositories.zip .
 
     - name: Upload repository results
       uses: actions/upload-artifact@v2
@@ -78,28 +79,18 @@ jobs:
           - 5432:5432
 
     steps:
-    - name: Download  repository results
+    - name: Download repositories results
       uses: actions/download-artifact@v2
       with:
         name: repositories
+
+    - name: Unzip repositories
+      run: sudo apt-get update && sudo apt-get install -y unzip && unzip repositories.zip
 
     - name: chown home for pypy
       uses: docker://gcr.io/iterativo/dockerdoo:12.0
       with:
         args: sudo chown -R 1000:1000 /github/home
-
-    - name: ls .
-      uses: docker://gcr.io/iterativo/dockerdoo:12.0
-      with:
-        args: ls .
-
-    - name: Download python addons script
-      run: curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/12.0/resources/getaddons.py -o getaddons.py
-
-    - name: ls /github/workspace
-      uses: docker://gcr.io/iterativo/dockerdoo:12.0
-      with:
-        args: ls /github/workspace
 
     - name: Run odoo
       uses: docker://gcr.io/iterativo/dockerdoo:12.0
