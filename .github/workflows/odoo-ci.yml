@@ -76,6 +76,8 @@ jobs:
         WITHOUT_DEMO: 'False'
         HOME: /
         EXTRA_MODULES: ${{ steps.get_modules.outputs.modules }}
+        # EXTRA_ADDONS_PATHS: /github/workspace
+        ODOO_EXTRA_ADDONS: /github/workspace
 
     # - name: Build the tagged Docker image
     #   uses: docker://gcr.io/cloud-builders/docker
