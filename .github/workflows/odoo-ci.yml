@@ -68,7 +68,7 @@ jobs:
     - name: chown home for pypy
       uses: docker://gcr.io/iterativo/dockerdoo:12.0
       with:
-        args: chown -R 1000:1000 /github/home
+        args: sudo chown -R 1000:1000 /github/home
 
     - name: Run odoo
       uses: docker://gcr.io/iterativo/dockerdoo:12.0
