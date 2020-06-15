@@ -2,12 +2,17 @@ name: Main odoo Unit Tests
 
 on: [push, pull_request]
 
+env:
+  odoo: gcr.io/iterativo/dockerdoo
+  version: '12.0'
+  image: ${{ env.image }}
+  
 jobs:
   dependencies:
     name: Pull dependencies
     runs-on: ubuntu-latest
     container:
-      image: gcr.io/iterativo/dockerdoo:12.0
+      image: gcr.io/iterativo/dockerdoo:${{ env.version }}
       options: --user root
       volumes:
         - ${{ github.workspace }}:/workspace
@@ -21,7 +26,7 @@ jobs:
         path: main
 
     - name: Download python addons script
-      run: curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/12.0/resources/getaddons.py -o getaddons.py
+      run: curl https://raw.githubusercontent.com/iterativo-git/dockerdoo/${{ env.version }}/resources/getaddons.py -o getaddons.py
 
     - name: python get_modules
       id: get_modules
@@ -34,14 +39,14 @@ jobs:
       with:
         repository: itpp-labs/pos-addons
         path: pos-addons
-        ref: '12.0'
+        ref: ${{ env.version }}
 
     - name: Checkout indexa external services
       uses: actions/checkout@v2
       with:
         repository: indexa-git/external_service_addons
         path: external-service-addons
-        ref: '12.0'
+        ref: ${{ env.version }}
 
     - name: Zip repositories for upload
       run: sudo apt-get update && sudo apt-get install -y zip && zip -r repositories.zip .
@@ -57,7 +62,7 @@ jobs:
     needs: ['dependencies']
     runs-on: ubuntu-latest
     container:
-      image: gcr.io/iterativo/dockerdoo:12.0
+      image: gcr.io/iterativo/dockerdoo:${{ env.version }}
       options: --user root
       volumes:
         - ${{ github.workspace }}:/workspace
@@ -88,12 +93,12 @@ jobs:
       run: sudo apt-get update && sudo apt-get install -y unzip && unzip repositories.zip
 
     - name: chown home for pypy
-      uses: docker://gcr.io/iterativo/dockerdoo:12.0
+      uses: docker://gcr.io/iterativo/dockerdoo:${{ env.version }}
       with:
         args: sudo chown -R 1000:1000 /github/home
 
     - name: Run odoo
-      uses: docker://gcr.io/iterativo/dockerdoo:12.0
+      uses: docker://gcr.io/iterativo/dockerdoo:${{ env.version }}
       with:
         args: odoo
       env:
@@ -122,9 +127,9 @@ jobs:
       uses: docker/build-push-action@v1
       with:
         dockerfile: main/Dockerfile
-        cache_froms: gcr.io/iterativo/dockerdoo:12.0
+        cache_froms: gcr.io/iterativo/dockerdoo:${{ env.version }}
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
         registry: docker.pkg.github.com
-        repository: odoo-dominicana/l10n-dominicana/odoord
+        repository: ${{ github.repository }}/${{ env.image }}
         tag_with_ref: true
