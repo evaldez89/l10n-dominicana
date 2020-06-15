@@ -101,7 +101,7 @@ jobs:
         PIP_AUTO_INSTALL: '1'
         LOG_LEVEL: test
         WITHOUT_DEMO: 'False'
-        EXTRA_MODULES: ${{ needs.dependencies.outputs.get_modules.modules }}
+        EXTRA_MODULES: ${{ needs.dependencies.outputs.get_modules }}
         ODOO_EXTRA_ADDONS: /github/workspace
 
   build:
