@@ -3,8 +3,6 @@ name: Main odoo Unit Tests
 on: [push, pull_request]
 
 env:
-  odoo: gcr.io/iterativo/dockerdoo
-  version: '12.0'
   image: odoord
   
 jobs:
@@ -39,14 +37,14 @@ jobs:
       with:
         repository: itpp-labs/pos-addons
         path: pos-addons
-        ref: 12.0
+        ref: '12.0'
 
     - name: Checkout indexa external services
       uses: actions/checkout@v2
       with:
         repository: indexa-git/external_service_addons
         path: external-service-addons
-        ref: 12.0
+        ref: '12.0'
 
     - name: Zip repositories for upload
       run: sudo apt-get update && sudo apt-get install -y zip && zip -r repositories.zip .
