@@ -5,7 +5,7 @@ on: [push, pull_request]
 env:
   odoo: gcr.io/iterativo/dockerdoo
   version: '12.0'
-  image: ${{ env.image }}
+  image: odoord
   
 jobs:
   dependencies:
